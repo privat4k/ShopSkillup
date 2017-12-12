@@ -27,16 +27,58 @@ class ProductController extends Controller
     /**
      * @Route("/product/{id}", name="product_show")
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        $repo = $this->getDoctrine()->getRepository(Product::class);
-        $product = $repo->find($id);
-
-        if (!$product) {
-            throw $this->createNotFoundException('Product not found');
-        }
-
-        return $this->render('product/show.html.twig');
+        return $this->render('product/show.html.twig', ['product' => $product]);
 
     }
+
+    /**
+     * @Route("/products/{name}", name="products_list")
+     */
+    public function listProducts($name= '')
+    {
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+
+        if ($name ){
+            $products = $repo->findBy(['name'=> $name], ['price'=>'DESC']);
+        } else {
+            $products = $repo->findAll();
+    }
+
+
+        if (!$products) {
+            throw $this->createNotFoundException('Products not found');
+        }
+
+        return $this->render('product/list.html.twig', ['products' => $products]);
+
+    }
+
+    /**
+     * @Route("/product-update/{id}", name="product_update")
+     */
+    public function update(Product $product, EntityManagerInterface $em)
+    {
+
+        $product->setName('Laptop');
+        $em->flush();
+
+        return $this->render('product/show.html.twig', ['product' => $product]);
+
+    }
+
+    /**
+     * @Route("/product-delete/{id}", name="product_delete")
+     */
+    public function delete(Product $product, EntityManagerInterface $em)
+    {
+
+        $em->remove($product);
+        $em->flush();
+
+        return $this->render('product/show.html.twig', ['product' => $product]);
+
+    }
+
 }
