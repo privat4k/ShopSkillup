@@ -37,6 +37,32 @@ class Product
     private $description;
 
     /**
+     * @return Category
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category $category
+     * @return Product
+     */
+    public function setCategory(Category $category): Product
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @var Category
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
+     * @ORM\JoinColumn(name="category_id, onDelete="CASCADE")
+     */
+    private $category;
+
+    /**
      * @return mixed
      */
     public function getId()

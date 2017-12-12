@@ -1,1 +1,9 @@
-Category: {{ category.name }} <br>
+{% for message in app.flashes('notice') %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+Category: {{ category.name }}<br>
+Page: {{ page }}<br>
+
+
+<a href="{{ path('category_message') }}">Add to cart</a>
