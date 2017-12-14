@@ -1,43 +1,62 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: SkillUP Student
- * Date: 05.12.2017
- * Time: 19:33
- */
-
 namespace App\Controller;
-
-
 use App\Entity\Category;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CategoryController extends Controller
 {
     /**
-     * @Route("/category/{id}", name="category_show")
+     * @Route("/category/{slug}/{page}",
+     *     name="category_show",
+     *     requirements={"page": "\d+"}
+     *     )
+     * @ParamConverter("slug", options={"mapping": {"slug": "slug"}})
+     *
+     * @param Category $category
+     * @param $page
+     * @param $session
+     *
+     * @return Response
      */
-    public function show(Category $category)
-    {
-        return $this->render('category/show.html.twig', ['category' => $category]);
+    public function show(Category $category, $page = 1, SessionInterface $session) {
+        $session->set('lastVisitedCategory', $category->getId());
+        return $this->render(
+            'category/show.html.twig',
+            ['category' => $category, 'page' => $page]
+        );
     }
     /**
-     * @Route("/category/{name}", name="$category_list")
+     * @Route("/categories", name="categories_list")
      */
-    public function listCategory($name = '')
+    public function listCategories()
     {
         $repo = $this->getDoctrine()->getRepository(Category::class);
-        if($name){
-            $category = $repo->findBy(['name' => $name]);
-        } else {
-            $category = $repo->findAll();
+        $categories = $repo->findAll();
+        if ( !$categories ) {
+            throw $this->createNotFoundException('Categories not found');
         }
-        if(!$category){
-            throw $this->createNotFoundException('Category not found!');
-        }
-        return $this->render('category/list.html.twig', ['category' => $category]);
+        return $this->render('category/list.html.twig', ['categories' => $categories]);
+    }
+    /**
+     * @Route("message", name="category_message")
+     */
+    public function message(SessionInterface $session)
+    {
+        $this->addFlash('notice', 'Successfully added.');
+        $lastCategory = $session->get('lastVisitedCategory');
+        return $this->redirectToRoute('category_show', ['slug' => $lastCategory]);
+    }
+    /**
+     * @Route("download", name="category_download")
+     */
+    public function fileDownload()
+    {
+        $response = new Response();
+        $response->setContent('Test content');
+        return $response;
     }
 }

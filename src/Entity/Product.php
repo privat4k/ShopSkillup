@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  */
@@ -21,21 +18,25 @@ class Product
      * @ORM\Column(type="string", length=250)
      */
     private $name;
-
     /**
      * @var string
      *
      * @ORM\Column(type="decimal", scale=2)
      */
     private $price;
-
     /**
      * @var string
      *
      * @ORM\Column(type="text")
      */
     private $description;
-
+    /**
+     * @var Category
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
+     * @ORM\JoinColumn(name="category_id", onDelete="CASCADE")
+     */
+    private $category;
     /**
      * @return mixed
      */
@@ -43,9 +44,9 @@ class Product
     {
         return $this->id;
     }
-
     /**
      * @param mixed $id
+     *
      * @return Product
      */
     public function setId($id)
@@ -53,7 +54,6 @@ class Product
         $this->id = $id;
         return $this;
     }
-
     /**
      * @return string
      */
@@ -61,9 +61,9 @@ class Product
     {
         return $this->name;
     }
-
     /**
      * @param string $name
+     *
      * @return Product
      */
     public function setName(string $name): Product
@@ -71,7 +71,6 @@ class Product
         $this->name = $name;
         return $this;
     }
-
     /**
      * @return string
      */
@@ -79,9 +78,9 @@ class Product
     {
         return $this->price;
     }
-
     /**
      * @param string $price
+     *
      * @return Product
      */
     public function setPrice(string $price): Product
@@ -89,7 +88,6 @@ class Product
         $this->price = $price;
         return $this;
     }
-
     /**
      * @return string
      */
@@ -97,9 +95,9 @@ class Product
     {
         return $this->description;
     }
-
     /**
      * @param string $description
+     *
      * @return Product
      */
     public function setDescription(string $description): Product
@@ -107,7 +105,19 @@ class Product
         $this->description = $description;
         return $this;
     }
-
-
-
+    /**
+     * @return Category
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+    /**
+     * @param Category $category
+     */
+    public function setCategory(Category $category): Product
+    {
+        $this->category = $category;
+        return $this;
+    }
 }
