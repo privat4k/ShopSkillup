@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 use App\Entity\Category;
+use App\Service\Catalogue;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -9,6 +10,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CategoryController extends Controller
 {
+    /**
+     * @var Catalogue
+     */
+    private $catalogue;
+
+    public function __construct(Catalogue $catalogue)
+    {
+        $this->catalogue = $catalogue;
+    }
+
+
     /**
      * @Route("/category/{slug}/{page}",
      *     name="category_show",
@@ -29,18 +41,21 @@ class CategoryController extends Controller
             ['category' => $category, 'page' => $page]
         );
     }
+
     /**
-     * @Route("/category", name="category_list")
+     * @Route("/categories", name="category_list")
      */
     public function listCategory()
     {
-        $repo = $this->getDoctrine()->getRepository(Category::class);
-        $category = $repo->findAll();
+
+        $category = $this->catalogue->getCategory();
+
         if ( !$category ) {
             throw $this->createNotFoundException('Category not found');
         }
         return $this->render('category/list.html.twig', ['category' => $category]);
     }
+
     /**
      * @Route("message", name="category_message")
      */
@@ -50,6 +65,7 @@ class CategoryController extends Controller
         $lastCategory = $session->get('lastVisitedCategory');
         return $this->redirectToRoute('category_show', ['slug' => $lastCategory]);
     }
+
     /**
      * @Route("download", name="category_download")
      */

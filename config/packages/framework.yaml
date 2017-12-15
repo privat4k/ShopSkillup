@@ -7,7 +7,7 @@ framework:
     # uncomment this entire section to enable sessions
     session:
     #    # With this config, PHP's native session handling is used
-    #    handler_id: ~
+        handler_id: ~
 
     #esi: ~
     #fragments: ~
