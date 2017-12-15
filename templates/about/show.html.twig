@@ -1,6 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+About
+{% endblock %}
+{% block body %}
 About
 <a href="{{ notebooksUrl }}">Notebooks</a>
 <a href="{{ path('category_show', {'slug': 'tvs', 'page': 5}) }}">TVs</a>
 <a href="{{ url('category_show', {'slug': 'media'}) }}">Media centers</a><br>
 
 Last visited category: {{ lastCategory }}
+{% endblock %}

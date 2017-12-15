@@ -30,16 +30,16 @@ class CategoryController extends Controller
         );
     }
     /**
-     * @Route("/categories", name="categories_list")
+     * @Route("/category", name="category_list")
      */
-    public function listCategories()
+    public function listCategory()
     {
         $repo = $this->getDoctrine()->getRepository(Category::class);
-        $categories = $repo->findAll();
-        if ( !$categories ) {
-            throw $this->createNotFoundException('Categories not found');
+        $category = $repo->findAll();
+        if ( !$category ) {
+            throw $this->createNotFoundException('Category not found');
         }
-        return $this->render('category/list.html.twig', ['categories' => $categories]);
+        return $this->render('category/list.html.twig', ['category' => $category]);
     }
     /**
      * @Route("message", name="category_message")
