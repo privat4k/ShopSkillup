@@ -43,12 +43,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/categories", name="category_list")
+     * @Route("/categories", name="categories_list")
      */
     public function listCategory()
     {
 
-        $category = $this->catalogue->getCategory();
+        $category = $this->catalogue->getCategories();
 
         if ( !$category ) {
             throw $this->createNotFoundException('Category not found');
